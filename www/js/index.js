@@ -67,7 +67,7 @@ var app = {
             client.on('message', function (topic, message) {
                // message is Buffer
                console.log(message.toString())
-               var messageElement = document.getElementById("messagebox);
+               var messageElement = document.getElementById("messagebox");
                messageElement.innerHTML = message.toString();
                // client.end()
             })
