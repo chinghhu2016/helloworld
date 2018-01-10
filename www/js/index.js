@@ -59,7 +59,7 @@ var app = {
                 self.receivedEvent('connected');
                 client.subscribe('presence')
                 client.publish('presence', 'Hello mqtt')
-                var messageElement = document.getElementById("messagebox);
+                var messageElement = document.getElementById("messagebox");
                 messageElement.setAttribute('style', 'display:block;');
                 console.log("connected")
             })
