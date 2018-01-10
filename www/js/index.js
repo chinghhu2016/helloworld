@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+var client;
 var app = {
     // Application Constructor
     initialize: function() {
@@ -43,6 +44,25 @@ var app = {
 
         listeningElement.setAttribute('style', 'display:none;');
         receivedElement.setAttribute('style', 'display:block;');
+        
+        if (id === 'deviceready') {
+            // var client  = mqtt.connect('ws://broker.hivemq.com:8000/mqtt')
+            // var client  = mqtt.connect('ws://test.mosquitto.org:8080/mqtt')
+            var msgElement = document.getElementById('messagebox');
+            client = mqtt.connect('ws://iot.eclipse.org:80/ws')
+            console.log("connecting...")
+            client.on('connect', function () {
+                client.subscribe('presence')
+                client.publish('presence', 'Hello mqtt')
+                console.log("connected")
+            })
+
+            client.on('message', function (topic, message) {
+               // message is Buffer
+               console.log(message.toString())
+               // client.end()
+            })
+        }
 
         console.log('Received Event: ' + id);
     }
