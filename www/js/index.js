@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+var client;
 var app = {
     // Application Constructor
     initialize: function() {
@@ -37,12 +38,40 @@ var app = {
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
+        var self = this;
+        var parentElement = document.getElementById('deviceready');
         var listeningElement = parentElement.querySelector('.listening');
         var receivedElement = parentElement.querySelector('.received');
+        var connectedElement = parentElement.querySelector('.connected');
+        if (id === 'connected') {
+            listeningElement.setAttribute('style', 'display:none;');
+            receivedElement.setAttribute('style', 'display:none;');
+            connectedElement.setAttribute('style', 'display:block;');
+        } else if (id === 'deviceready') {
+            listeningElement.setAttribute('style', 'display:none;');
+            receivedElement.setAttribute('style', 'display:block;');
+            // var client  = mqtt.connect('ws://broker.hivemq.com:8000/mqtt')
+            // var client  = mqtt.connect('ws://test.mosquitto.org:8080/mqtt')
+            var msgElement = document.getElementById('messagebox');
+            client = mqtt.connect('ws://iot.eclipse.org:80/ws')
+            console.log("connecting...")
+            client.on('connect', function () {
+                self.receivedEvent('connected');
+                client.subscribe('presence')
+                client.publish('presence', 'Hello mqtt')
+                var messageElement = document.getElementById("messagebox");
+                messageElement.setAttribute('style', 'display:block;');
+                console.log("connected")
+            })
 
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
+            client.on('message', function (topic, message) {
+               // message is Buffer
+               console.log(message.toString())
+               var messageElement = document.getElementById("messagebox");
+               messageElement.innerHTML = message.toString();
+               // client.end()
+            })
+        }
 
         console.log('Received Event: ' + id);
     }
